@@ -1,0 +1,30 @@
+{
+  "name": "nodejs-training",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon --inspect index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/extras28/nodejs_training.git"
+  },
+  "keywords": [
+    "nodejs",
+    "training"
+  ],
+  "author": "dungna",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/extras28/nodejs_training/issues"
+  },
+  "homepage": "https://github.com/extras28/nodejs_training#readme",
+  "dependencies": {
+    "express": "^4.18.1"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.19"
+  }
+}
