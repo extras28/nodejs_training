@@ -9,14 +9,12 @@ class CourseController {
 
     // [POST] /courses/store
     store(req, res, next) {
-        // res.json(req.body)
-        const formData = req.body;
-        formData.thumbnail = `https://i.ytimg.com/vi/${req.body.videoId}/hqdefault.jpg?sqp=-oaymwEbCKgBEF5IVfKriqkDDggBFQAAiEIYAXABwAEG&rs=AOn4CLAc2AQkTLMw6nodO1GDkTsnJhzQJA`;
-        const course = new Course(formData);
+        req.body.thumbnail = `https://i.ytimg.com/vi/${req.body.videoId}/hqdefault.jpg?sqp=-oaymwEbCKgBEF5IVfKriqkDDggBFQAAiEIYAXABwAEG&rs=AOn4CLAc2AQkTLMw6nodO1GDkTsnJhzQJA`;
+        const course = new Course(req.body);
         course
             .save()
-            .then(() => res.redirect('/'))
-            .catch((error) => {});
+            .then(() => res.redirect('/me/stored/courses'))
+            .catch(next);
     }
 
     // [GET] /courses/:slug
@@ -60,6 +58,64 @@ class CourseController {
         })
             .then(() => res.redirect('back'))
             .catch(next);
+    }
+    // [DELTE] /courses/:id/force
+    forceDelete(req, res, next) {
+        Course.deleteOne({
+            _id: req.params.id,
+        })
+            .then(() => res.redirect('back'))
+            .catch(next);
+    }
+    // [PATCH}] /courses/:id/restore
+    restore(req, res, next) {
+        Course.restore({
+            _id: req.params.id,
+        })
+            .then(() => res.redirect('back'))
+            .catch(next);
+    }
+
+    handleFormActions(req, res, next) {
+        switch (req.body.action) {
+            case 'delete':
+                Course.delete({
+                    _id: { $in: req.body.courseIds },
+                })
+                    .then(() => res.redirect('back'))
+                    .catch(next);
+                break;
+            default:
+                res.json({
+                    message: 'Invalid action',
+                    error: req.body.error,
+                });
+        }
+    }
+
+    handleFormActionsForceDelete(req, res, next) {
+        console.log(req.body);
+        switch (req.body.action) {
+            case 'force-delete':
+                Course.deleteMany({
+                    _id: { $in: req.body.courseIdsRecycle },
+                })
+                    .then(() => res.redirect('back'))
+                    .catch(next);
+                break;
+            case 'restore':
+                Course.restore({
+                    _id: { $in: req.body.courseIdsRecycle },
+                })
+                    .then(() => res.redirect('back'))
+                    .catch(next);
+                break;
+            default:
+                res.json({
+                    message: 'Invalid action',
+                    error: req.body.error,
+                });
+        }
     }
 }
 
